@@ -1,0 +1,54 @@
+{
+  "n_samples": 80,
+  "fractions": {
+    "30%": {
+      "recognition_accuracy": 0.189,
+      "mace_pct": 31.3,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "40%": {
+      "recognition_accuracy": 0.297,
+      "mace_pct": 30.2,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "50%": {
+      "recognition_accuracy": 0.297,
+      "mace_pct": 28.9,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "60%": {
+      "recognition_accuracy": 0.297,
+      "mace_pct": 29.8,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "70%": {
+      "recognition_accuracy": 0.432,
+      "mace_pct": 27.5,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "80%": {
+      "recognition_accuracy": 0.432,
+      "mace_pct": 36.4,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "90%": {
+      "recognition_accuracy": 0.432,
+      "mace_pct": 42.0,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    },
+    "100%": {
+      "recognition_accuracy": 0.541,
+      "mace_pct": 53.2,
+      "false_early_detection_rate": 1.0,
+      "n": 37
+    }
+  },
+  "overall_mace_pct": 34.9
+}

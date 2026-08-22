@@ -1,0 +1,17 @@
+{
+  "onnx_path": "artifacts/runs/pattern_detector_v001/checkpoints/best.onnx",
+  "pt_benchmark": {
+    "backend": "ultralytics-mps",
+    "n_runs": 30,
+    "mean_ms": 5.87,
+    "median_ms": 5.52,
+    "p95_ms": 7.68
+  },
+  "onnx_benchmark": {
+    "backend": "onnxruntime-cpu",
+    "n_runs": 30,
+    "mean_ms": 13.44,
+    "median_ms": 12.98,
+    "p95_ms": 17.81
+  }
+}

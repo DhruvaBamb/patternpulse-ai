@@ -1,0 +1,568 @@
+{
+  "n_images": 250,
+  "n_with_regenerable_closes": 250,
+  "systems": {
+    "A_cv_only": {
+      "precision": 0.8075,
+      "recall": 0.688,
+      "f1": 0.743,
+      "tp": 172,
+      "fp": 41,
+      "fn": 78
+    },
+    "B_geometry_only": {
+      "precision": 0.028,
+      "recall": 0.404,
+      "f1": 0.0524,
+      "tp": 101,
+      "fp": 3501,
+      "fn": 149
+    },
+    "C_hybrid": {
+      "precision": 0.0711,
+      "recall": 0.212,
+      "f1": 0.1065,
+      "tp": 53,
+      "fp": 692,
+      "fn": 197
+    }
+  },
+  "latency_ms": {
+    "A_cv_only": {
+      "mean": 13.2,
+      "p95": 14.4
+    },
+    "B_geometry_only": {
+      "mean": 8.4,
+      "p95": 10.7
+    },
+    "C_hybrid": {
+      "mean": 20.2,
+      "p95": 26.3
+    }
+  },
+  "note": "B/C arms cover regenerable synthetic samples; per-class detail in per_class",
+  "per_class": {
+    "A_cv_only": {
+      "ab_cd": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 15
+      },
+      "butterfly": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0
+      },
+      "deep_crab": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "triple_bottom": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "double_bottom": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "ascending_channel": {
+        "tp": 19,
+        "fp": 0,
+        "fn": 6
+      },
+      "rising_wedge": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0
+      },
+      "broadening_formation": {
+        "tp": 24,
+        "fp": 3,
+        "fn": 2
+      },
+      "descending_channel": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "ascending_triangle": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 1
+      },
+      "bat": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 4
+      },
+      "bear_flag": {
+        "tp": 32,
+        "fp": 1,
+        "fn": 0
+      },
+      "bear_pennant": {
+        "tp": 37,
+        "fp": 0,
+        "fn": 4
+      },
+      "bearish_belt_hold": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 28
+      },
+      "marubozu_bearish": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "bearish_engulfing": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 7
+      },
+      "bearish_harami": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1
+      },
+      "bearish_rectangle": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 7
+      },
+      "bullish_rectangle": {
+        "tp": 0,
+        "fp": 7,
+        "fn": 0
+      },
+      "rectangle": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0
+      },
+      "horizontal_channel": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0
+      },
+      "bull_flag": {
+        "tp": 23,
+        "fp": 0,
+        "fn": 3
+      },
+      "bull_pennant": {
+        "tp": 10,
+        "fp": 4,
+        "fn": 0
+      }
+    },
+    "B_geometry_only": {
+      "three_outside_down": {
+        "tp": 0,
+        "fp": 150,
+        "fn": 0
+      },
+      "rounded_bottom": {
+        "tp": 0,
+        "fp": 230,
+        "fn": 0
+      },
+      "marubozu_bearish": {
+        "tp": 0,
+        "fp": 166,
+        "fn": 0
+      },
+      "head_and_shoulders": {
+        "tp": 0,
+        "fp": 97,
+        "fn": 0
+      },
+      "spinning_top": {
+        "tp": 0,
+        "fp": 250,
+        "fn": 0
+      },
+      "diamond_top": {
+        "tp": 0,
+        "fp": 85,
+        "fn": 0
+      },
+      "inverse_cup_and_handle": {
+        "tp": 0,
+        "fp": 202,
+        "fn": 0
+      },
+      "rounded_top": {
+        "tp": 0,
+        "fp": 240,
+        "fn": 0
+      },
+      "cup_and_handle": {
+        "tp": 0,
+        "fp": 186,
+        "fn": 0
+      },
+      "three_black_crows": {
+        "tp": 0,
+        "fp": 133,
+        "fn": 0
+      },
+      "diamond_bottom": {
+        "tp": 0,
+        "fp": 85,
+        "fn": 0
+      },
+      "ab_cd": {
+        "tp": 1,
+        "fp": 25,
+        "fn": 14
+      },
+      "three_white_soldiers": {
+        "tp": 0,
+        "fp": 78,
+        "fn": 0
+      },
+      "inverse_head_and_shoulders": {
+        "tp": 0,
+        "fp": 113,
+        "fn": 0
+      },
+      "marubozu_bullish": {
+        "tp": 0,
+        "fp": 79,
+        "fn": 0
+      },
+      "descending_channel": {
+        "tp": 0,
+        "fp": 184,
+        "fn": 0
+      },
+      "ascending_channel": {
+        "tp": 25,
+        "fp": 159,
+        "fn": 0
+      },
+      "double_bottom": {
+        "tp": 0,
+        "fp": 145,
+        "fn": 0
+      },
+      "falling_wedge": {
+        "tp": 0,
+        "fp": 63,
+        "fn": 0
+      },
+      "rising_wedge": {
+        "tp": 0,
+        "fp": 55,
+        "fn": 0
+      },
+      "bear_flag": {
+        "tp": 10,
+        "fp": 24,
+        "fn": 22
+      },
+      "bear_pennant": {
+        "tp": 9,
+        "fp": 23,
+        "fn": 32
+      },
+      "shark": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0
+      },
+      "triple_bottom": {
+        "tp": 0,
+        "fp": 110,
+        "fn": 0
+      },
+      "double_top": {
+        "tp": 0,
+        "fp": 147,
+        "fn": 0
+      },
+      "bullish_belt_hold": {
+        "tp": 0,
+        "fp": 14,
+        "fn": 0
+      },
+      "triple_top": {
+        "tp": 0,
+        "fp": 120,
+        "fn": 0
+      },
+      "bull_flag": {
+        "tp": 14,
+        "fp": 34,
+        "fn": 12
+      },
+      "bull_pennant": {
+        "tp": 1,
+        "fp": 35,
+        "fn": 9
+      },
+      "bearish_belt_hold": {
+        "tp": 2,
+        "fp": 57,
+        "fn": 26
+      },
+      "ascending_triangle": {
+        "tp": 1,
+        "fp": 8,
+        "fn": 10
+      },
+      "bearish_rectangle": {
+        "tp": 17,
+        "fp": 17,
+        "fn": 3
+      },
+      "rectangle": {
+        "tp": 0,
+        "fp": 34,
+        "fn": 0
+      },
+      "horizontal_channel": {
+        "tp": 0,
+        "fp": 34,
+        "fn": 0
+      },
+      "bullish_rectangle": {
+        "tp": 0,
+        "fp": 34,
+        "fn": 0
+      },
+      "bat": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 8
+      },
+      "symmetrical_triangle": {
+        "tp": 0,
+        "fp": 26,
+        "fn": 0
+      },
+      "broadening_formation": {
+        "tp": 18,
+        "fp": 8,
+        "fn": 8
+      },
+      "bearish_engulfing": {
+        "tp": 3,
+        "fp": 12,
+        "fn": 4
+      },
+      "tweezer_top": {
+        "tp": 0,
+        "fp": 15,
+        "fn": 0
+      },
+      "descending_triangle": {
+        "tp": 0,
+        "fp": 17,
+        "fn": 0
+      },
+      "dark_cloud_cover": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "butterfly": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "bearish_harami": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1
+      }
+    },
+    "C_hybrid": {
+      "rounded_bottom": {
+        "tp": 0,
+        "fp": 110,
+        "fn": 0
+      },
+      "three_black_crows": {
+        "tp": 0,
+        "fp": 106,
+        "fn": 0
+      },
+      "three_outside_down": {
+        "tp": 0,
+        "fp": 60,
+        "fn": 0
+      },
+      "ab_cd": {
+        "tp": 1,
+        "fp": 15,
+        "fn": 14
+      },
+      "rounded_top": {
+        "tp": 0,
+        "fp": 79,
+        "fn": 0
+      },
+      "three_white_soldiers": {
+        "tp": 0,
+        "fp": 64,
+        "fn": 0
+      },
+      "head_and_shoulders": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0
+      },
+      "inverse_cup_and_handle": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0
+      },
+      "marubozu_bullish": {
+        "tp": 0,
+        "fp": 37,
+        "fn": 0
+      },
+      "marubozu_bearish": {
+        "tp": 0,
+        "fp": 59,
+        "fn": 0
+      },
+      "shark": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0
+      },
+      "diamond_bottom": {
+        "tp": 0,
+        "fp": 14,
+        "fn": 0
+      },
+      "inverse_head_and_shoulders": {
+        "tp": 0,
+        "fp": 19,
+        "fn": 0
+      },
+      "double_bottom": {
+        "tp": 0,
+        "fp": 52,
+        "fn": 0
+      },
+      "ascending_channel": {
+        "tp": 24,
+        "fp": 0,
+        "fn": 1
+      },
+      "double_top": {
+        "tp": 0,
+        "fp": 30,
+        "fn": 0
+      },
+      "diamond_top": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 0
+      },
+      "ascending_triangle": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 11
+      },
+      "bat": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 8
+      },
+      "bear_flag": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 32
+      },
+      "bear_pennant": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 41
+      },
+      "triple_top": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "bearish_belt_hold": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 28
+      },
+      "bearish_engulfing": {
+        "tp": 2,
+        "fp": 10,
+        "fn": 5
+      },
+      "rectangle": {
+        "tp": 0,
+        "fp": 9,
+        "fn": 0
+      },
+      "falling_wedge": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "tweezer_top": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "bearish_harami": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1
+      },
+      "bearish_rectangle": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 13
+      },
+      "bullish_rectangle": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "horizontal_channel": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      },
+      "broadening_formation": {
+        "tp": 18,
+        "fp": 0,
+        "fn": 8
+      },
+      "bull_flag": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 25
+      },
+      "bullish_belt_hold": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0
+      },
+      "bull_pennant": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 10
+      },
+      "spinning_top": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0
+      }
+    }
+  }
+}

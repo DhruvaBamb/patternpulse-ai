@@ -1,0 +1,31 @@
+run_name: pattern_detector_v001
+model_arch: yolo11n
+image_size: 640
+epochs: 25
+batch_size: 32
+device: mps
+workers: 4
+seed: 42
+optimizer:
+  name: auto
+  lr0: 0.01
+  lrf: 0.01
+dataset:
+  version: null
+  registry_filter:
+    implemented_only: true
+  splits:
+    train_frac: 0.7
+    val_frac: 0.15
+    test_frac: 0.15
+    chronological: true
+checkpointing:
+  save_every_epochs: 1
+  keep_epoch_checkpoints: 5
+  save_best: true
+  emergency_on_signal: true
+early_stopping:
+  enabled: true
+  patience: 25
+  metric: metrics/mAP50-95(B)
+  mode: max

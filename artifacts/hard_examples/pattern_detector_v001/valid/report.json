@@ -1,0 +1,10 @@
+{
+  "split": "valid",
+  "n_images": 1439,
+  "stats": {
+    "false_positives": 100
+  },
+  "confusion_pairs": {},
+  "review_dir": "artifacts/hard_examples/pattern_detector_v001/valid",
+  "note": "Copy review images into the training split (or upweight) to focus the next run."
+}

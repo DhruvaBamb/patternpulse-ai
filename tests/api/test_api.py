@@ -43,7 +43,11 @@ class TestSymbolRoutes:
         assert r.status_code == 200
         body = r.json()
         assert "cv_status" in body
-        assert body["cv_status"]["available"] is False  # no trained weights in test env
+        # availability must reflect whether configured weights exist on disk
+        from pathlib import Path
+
+        weights_exist = Path("artifacts/runs/pattern_detector_v001/checkpoints/best.pt").exists()
+        assert body["cv_status"]["available"] is weights_exist
 
 
 class TestPatternRoutes:

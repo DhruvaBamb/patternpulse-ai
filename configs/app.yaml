@@ -35,7 +35,7 @@ scanner:
 model:
   detector: yolo11n                     # ultralytics model family
   image_size: 640
-  weights: null                         # null => CV branch reports unavailable
+  weights: artifacts/runs/pattern_detector_v001/checkpoints/best.pt
   confidence_threshold: 0.25
   device: auto                          # auto | cpu | mps | cuda:0
 

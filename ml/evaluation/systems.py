@@ -40,7 +40,8 @@ def evaluate_systems(weights: str, dataset_yaml: str, limit: int | None = 400) -
     from ultralytics import YOLO
 
     from ..geometry.engine import GeometryEngine
-    from ..inference.detector import pick_device
+    from ..inference.detector import PatternDetector, pick_device
+    from ..inference.pipeline import DetectionPipeline, PipelineConfig
     from ..registry.registry import get_registry
 
     registry = get_registry()
@@ -51,6 +52,13 @@ def evaluate_systems(weights: str, dataset_yaml: str, limit: int | None = 400) -
     model = YOLO(weights)
     device = pick_device("auto")
     geometry = GeometryEngine(registry)
+    # System C is the production hybrid: renderer + trained detector + geometry
+    # + fusion gates, exactly what the scanner runs.
+    detector = PatternDetector(weights=weights, registry=registry, device=device, conf_threshold=0.3)
+    pipeline = DetectionPipeline(
+        registry=registry, detector=detector, geometry=geometry,
+        config=PipelineConfig(min_confidence=0.45, min_completion=0.2),
+    )
 
     # class-level tallies per system
     def blank() -> dict:
@@ -96,8 +104,8 @@ def evaluate_systems(weights: str, dataset_yaml: str, limit: int | None = 400) -
         im = _read_image(img)
         res = model.predict(source=im, conf=0.3, imgsz=640, device=device, verbose=False)
         cv_patterns = set()
-        if res and res[0].boxes is not None and res[0].boxes.cls is not None:
-            cv_patterns = {id2pattern[int(c)] for c in res[0].cls.tolist() if int(c) in id2pattern}
+        if res and res[0].boxes is not None and res[0].boxes.cls is not None and len(res[0].boxes.cls):
+            cv_patterns = {id2pattern[int(c)] for c in res[0].boxes.cls.tolist() if int(c) in id2pattern}
         latencies["A_cv_only"].append((time.perf_counter() - t0) * 1000)
 
         # System B: geometry only — needs the OHLC closes; only samples we can
@@ -116,12 +124,11 @@ def evaluate_systems(weights: str, dataset_yaml: str, limit: int | None = 400) -
             t0 = time.perf_counter()
             geo_patterns = {r.pattern_id for r in results if r.matched}
             geo_scores = {r.pattern_id: r.geometry_score for r in results}
+            # System C: production pipeline (render → CV → geometry → fusion → gates)
+            findings = pipeline.analyze(df, max_findings=3)
             latencies["C_hybrid"].append((time.perf_counter() - t0) * 1000)
+            hybrid_patterns = {f.pattern_id for f in findings}
 
-        # System C: hybrid = intersection-style agreement (CV proposal AND
-        # geometry pass) plus geometry-only hits above the fusion floor
-        hybrid_patterns = {p for p in cv_patterns if geo_scores.get(p, 0) >= 0.4}
-        hybrid_patterns |= {p for p in geo_patterns if p in cv_patterns or p not in cv_patterns}
         if closes is None:
             hybrid_patterns = cv_patterns  # no geometry witness available
 
