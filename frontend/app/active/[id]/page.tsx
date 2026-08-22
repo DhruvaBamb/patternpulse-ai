@@ -142,10 +142,45 @@ export default function DetectionDetailPage({ params }: { params: Promise<{ id: 
                   ) : null}
                 </div>
               </div>
+
+              <SimilarPanel detectionId={d.id} />
             </div>
           </div>
         )}
       </Page>
+    </div>
+  );
+}
+
+function SimilarPanel({ detectionId }: { detectionId: string }) {
+  const { data, loading } = useApi(() => api.similarHistorical(detectionId), [detectionId], 120000);
+  if (loading && !data) return null;
+  if (!data || data.similar_found === 0) return null;
+  return (
+    <div className="panel">
+      <div className="border-b px-4 py-2.5 text-xs font-medium">
+        Similar historical formations
+        <span className="ml-2 muted">
+          {data.similar_found} found · {data.confirmed} confirmed · {data.resolved_in_favour} resolved in favour
+        </span>
+      </div>
+      <table className="w-full text-xs">
+        <tbody>
+          {data.similar.slice(0, 6).map((s) => (
+            <tr key={s.id} className="border-b last:border-0">
+              <td className="px-4 py-1.5 font-mono">{s.symbol.replace(".NS", "")}</td>
+              <td className="px-4 py-1.5 font-mono muted">{s.interval}</td>
+              <td className="px-4 py-1.5">
+                <StatusBadge status={s.status} />
+              </td>
+              <td className="px-4 py-1.5 text-right font-mono tabular-nums muted">
+                similarity {(s.similarity * 100).toFixed(0)}%
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {data.note ? <div className="px-4 py-2 text-2xs muted">{data.note}</div> : null}
     </div>
   );
 }

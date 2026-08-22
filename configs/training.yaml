@@ -3,9 +3,9 @@
 run_name: pattern_detector_v001
 model_arch: yolo11n                     # ultralytics arch used for fresh runs
 image_size: 640
-epochs: 120
-batch_size: 16
-device: auto                            # auto => mps > cuda > cpu on this machine
+epochs: 25                             # MPS-feasible budget for ~6.7k train images
+batch_size: 32
+device: mps                             # Apple Silicon GPU (cuda:0 on GPU hosts)
 workers: 4
 seed: 42
 

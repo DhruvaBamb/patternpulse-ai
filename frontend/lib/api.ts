@@ -196,6 +196,33 @@ export const api = {
       `/api/notifications?only_unread=${onlyUnread ? "true" : "false"}`
     ),
   chatStatus: () => get<{ available: boolean; model: string | null; reason: string | null }>("/api/chat/status"),
+  confluence: (symbol: string, interval = "1d") =>
+    get<{
+      symbol: string;
+      interval: string;
+      direction?: string;
+      score: number;
+      factors: { factor: string; weight: number }[];
+      patterns?: { pattern: string; direction: string; completion: number; confidence: number; status: string }[];
+      note?: string;
+    }>(`/api/symbols/${encodeURIComponent(symbol)}/confluence?interval=${interval}`),
+  crossTimeframe: (symbol: string) =>
+    get<{
+      symbol: string;
+      timeframes: Record<string, { summary: string; direction: string | null; strongest?: { pattern: string; completion: number; confidence: number; status: string } }>;
+      context_score: number | null;
+      alignment?: string;
+      note?: string;
+    }>(`/api/symbols/${encodeURIComponent(symbol)}/timeframes`),
+  similarHistorical: (detectionId: string) =>
+    get<{
+      pattern: string;
+      similar_found: number;
+      similar: { id: string; symbol: string; interval: string; status: string; completion: number; confidence: number; similarity: number }[];
+      confirmed: number;
+      resolved_in_favour: number;
+      note?: string;
+    }>(`/api/patterns/${encodeURIComponent(detectionId)}/similar`),
 };
 
 export { ApiError };

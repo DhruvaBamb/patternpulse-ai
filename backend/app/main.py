@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,6 +33,11 @@ async def lifespan(app: FastAPI):
     app.state.alerts = AlertEngine()
     app.state.task_queue = TaskQueue()
 
+    from .services.analysis import AnalysisService
+
+    app.state.analysis = AnalysisService()
+    app.state.drift_status = _drift_status_snapshot()
+
     if settings.app_env != "test":
         from .workers.scanner import ScannerWorker
 
@@ -45,6 +51,26 @@ async def lifespan(app: FastAPI):
     if scanner:
         scanner.stop()
     logger.info("app_stopped")
+
+
+def _drift_status_snapshot() -> dict:
+    """Best-effort drift-reference snapshot for the status endpoint."""
+    try:
+        from ml.inference.drift import load_or_build_reference
+
+        root = Path("artifacts/datasets")
+        cands = sorted((p for p in root.iterdir() if (p / "data.yaml").exists()), key=lambda p: p.stat().st_mtime)
+        if not cands:
+            return {"configured": False, "note": "no dataset to build a reference from"}
+        ref = load_or_build_reference(cands[-1])
+        return {
+            "configured": True,
+            "reference": {"n_images": ref.n_images, "resolution": list(ref.resolution),
+                          "image_mean": round(ref.image_mean, 1), "edge_density": round(ref.edge_density_mean, 4)},
+            "note": "compare live windows via ml.inference.drift.monitor_window",
+        }
+    except Exception as exc:
+        return {"configured": False, "note": f"reference unavailable: {exc}"}
 
 
 def create_app() -> FastAPI:

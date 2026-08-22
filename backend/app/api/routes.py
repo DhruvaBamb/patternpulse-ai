@@ -511,6 +511,36 @@ def mark_read(db: Session = Depends(get_db)):
     return {"status": "ok"}
 
 
+# ── intelligence: similar / confluence / cross-timeframe / drift ────────────
+
+def get_analysis(request: Request):
+    return request.app.state.analysis
+
+
+@router.get("/patterns/{detection_id}/similar")
+def similar_historical(detection_id: str, db: Session = Depends(get_db), analysis=Depends(get_analysis)):
+    return analysis.similar_historical(db, detection_id)
+
+
+@router.get("/symbols/{symbol}/confluence")
+def confluence(symbol: str, interval: str = Query("1d"), db: Session = Depends(get_db), analysis=Depends(get_analysis)):
+    return analysis.confluence(db, symbol, interval)
+
+
+@router.get("/symbols/{symbol}/timeframes")
+def cross_timeframe(symbol: str, db: Session = Depends(get_db), analysis=Depends(get_analysis)):
+    from ..core.config import scanner_config
+
+    tfs = scanner_config().get("timeframes", ["1d"])
+    return analysis.cross_timeframe(db, symbol, tfs)
+
+
+@router.get("/drift/status")
+def drift_status(request: Request):
+    return getattr(request.app.state, "drift_status", {"configured": False,
+                                                        "note": "drift reference not built yet"})
+
+
 # ── SSE stream ──────────────────────────────────────────────────────────────
 
 @router.get("/stream")

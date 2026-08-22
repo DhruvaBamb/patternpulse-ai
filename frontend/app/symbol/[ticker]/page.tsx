@@ -13,6 +13,61 @@ import { cn } from "@/lib/utils";
 
 const TIMEFRAMES = ["15m", "1h", "1d"] as const;
 
+function ConfluencePanel({ symbol, interval }: { symbol: string; interval: string }) {
+  const { data, loading } = useApi(() => api.confluence(symbol, interval), [symbol, interval], 60000);
+  if (loading && !data) return null;
+  if (!data || (data.score === 0 && data.note)) return null;
+  return (
+    <div className="panel px-4 py-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium">
+          Confluence
+          {data.direction ? (
+            <span className={data.direction === "bullish" ? "ml-1.5 text-bull" : "ml-1.5 text-bear"}>
+              {data.direction}
+            </span>
+          ) : null}
+        </span>
+        <span className="font-mono text-sm">{data.score}/100</span>
+      </div>
+      {data.factors?.length ? (
+        <ul className="mt-1.5 space-y-0.5 text-2xs muted">
+          {data.factors.map((f, i) => (
+            <li key={i}>✓ {f.factor}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-1 text-2xs muted">{data.note}</p>
+      )}
+    </div>
+  );
+}
+
+function TimeframePanel({ symbol }: { symbol: string }) {
+  const { data, loading } = useApi(() => api.crossTimeframe(symbol), [symbol], 60000);
+  if (loading && !data) return null;
+  if (!data || data.context_score === null) return null;
+  return (
+    <div className="panel px-4 py-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium">Cross-timeframe context</span>
+        <span className="font-mono text-sm capitalize">{data.alignment}</span>
+      </div>
+      <div className="mt-1.5 space-y-1 text-2xs">
+        {Object.entries(data.timeframes).map(([tf, info]) => (
+          <div key={tf} className="flex items-start gap-2">
+            <span className="w-8 shrink-0 font-mono muted">{tf}</span>
+            <span className={info.direction === "bullish" ? "text-bull" : info.direction === "bearish" ? "text-bear" : "muted"}>
+              {info.summary}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-1.5 text-2xs muted">alignment score {data.context_score}/100</div>
+    </div>
+  );
+}
+
 export default function SymbolPage({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = use(params);
   const [interval, setIntervalTf] = useState<string>("1d");
@@ -189,6 +244,9 @@ export default function SymbolPage({ params }: { params: Promise<{ ticker: strin
                 <p className="mt-1.5 text-xs muted">{patterns.data.signal.reason}</p>
               </div>
             ) : null}
+
+            <ConfluencePanel symbol={ticker} interval={interval} />
+            <TimeframePanel symbol={ticker} />
           </div>
         </div>
       </Page>
