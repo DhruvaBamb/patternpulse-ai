@@ -1,0 +1,393 @@
+# Classical chart patterns (28). `validator_params` feed ml/geometry validators.
+patterns:
+  - id: head_and_shoulders
+    name: Head & Shoulders
+    category: classical
+    direction: bearish
+    min_bars: 40
+    max_bars: 200
+    geometry_validator: head_and_shoulders
+    description: "Three-peak formation where the middle peak (head) is the highest and the two shoulders are roughly symmetrical. Signals trend reversal from bullish to bearish when the neckline breaks."
+    confirmation_rules: ["Close below neckline", "Volume expansion on break"]
+    invalidation_rules: ["Right shoulder exceeds head", "Neckline reclaimed decisively"]
+    stages: [preceding_uptrend, left_shoulder, head, right_shoulder, neckline_break]
+    confused_with: [triple_top, double_top]
+    validator_params: {inverse: false, shoulder_symmetry_tol: 0.04, head_prominence_min: 0.02, neckline_fit_max_rmse: 0.015}
+
+  - id: inverse_head_and_shoulders
+    name: Inverse Head & Shoulders
+    category: classical
+    direction: bullish
+    min_bars: 40
+    max_bars: 200
+    geometry_validator: head_and_shoulders
+    description: "Mirror of Head & Shoulders: three troughs with the central trough deepest. Signals reversal from bearish to bullish on neckline breakout."
+    confirmation_rules: ["Close above neckline", "Volume expansion on break"]
+    invalidation_rules: ["Right shoulder undercuts head", "Neckline lost again"]
+    stages: [preceding_downtrend, left_shoulder, head, right_shoulder, neckline_break]
+    confused_with: [triple_bottom, double_bottom]
+    validator_params: {inverse: true, shoulder_symmetry_tol: 0.04, head_prominence_min: 0.02, neckline_fit_max_rmse: 0.015}
+
+  - id: double_top
+    name: Double Top
+    category: classical
+    direction: bearish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: multiples
+    description: "Two peaks at approximately the same level separated by a valley. Completion requires a break below the valley (neckline)."
+    confirmation_rules: ["Close below intervening low"]
+    invalidation_rules: ["Second peak exceeds first by wide margin", "Valley low broken then reclaimed"]
+    stages: [preceding_uptrend, first_peak, valley, second_peak, neckline_break]
+    confused_with: [triple_top, head_and_shoulders]
+    validator_params: {kind: top, n_peaks: 2, peak_equality_tol: 0.03, min_peak_separation: 8}
+
+  - id: double_bottom
+    name: Double Bottom
+    category: classical
+    direction: bullish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: multiples
+    description: "Two troughs at approximately the same level separated by a peak. Completion requires a break above the intervening high."
+    confirmation_rules: ["Close above intervening high"]
+    invalidation_rules: ["Second trough undercuts first deeply", "Peak lost after break"]
+    stages: [preceding_downtrend, first_trough, intervening_peak, second_trough, neckline_break]
+    confused_with: [triple_bottom, inverse_head_and_shoulders]
+    validator_params: {kind: bottom, n_peaks: 2, peak_equality_tol: 0.03, min_peak_separation: 8}
+
+  - id: triple_top
+    name: Triple Top
+    category: classical
+    direction: bearish
+    min_bars: 40
+    max_bars: 220
+    geometry_validator: multiples
+    description: "Three peaks near the same resistance level. A stronger resistance signal than the double top."
+    confirmation_rules: ["Close below lowest intervening trough"]
+    invalidation_rules: ["Third peak materially higher"]
+    stages: [preceding_uptrend, first_peak, trough, second_peak, trough2, third_peak, neckline_break]
+    confused_with: [double_top, head_and_shoulders, rectangle]
+    validator_params: {kind: top, n_peaks: 3, peak_equality_tol: 0.035, min_peak_separation: 7}
+
+  - id: triple_bottom
+    name: Triple Bottom
+    category: classical
+    direction: bullish
+    min_bars: 40
+    max_bars: 220
+    geometry_validator: multiples
+    description: "Three troughs near the same support level. A stronger support signal than the double bottom."
+    confirmation_rules: ["Close above highest intervening peak"]
+    invalidation_rules: ["Third trough materially lower"]
+    stages: [preceding_downtrend, first_trough, peak, second_trough, peak2, third_trough, neckline_break]
+    confused_with: [double_bottom, inverse_head_and_shoulders, rectangle]
+    validator_params: {kind: bottom, n_peaks: 3, peak_equality_tol: 0.035, min_peak_separation: 7}
+
+  - id: cup_and_handle
+    name: Cup & Handle
+    category: classical
+    direction: bullish
+    min_bars: 40
+    max_bars: 250
+    geometry_validator: cup
+    description: "Rounded basin (cup) followed by a shallow drift lower (handle), then breakout above the rim. Continuation pattern in uptrends."
+    confirmation_rules: ["Close above rim (breakout)", "Handle depth < 1/3 of cup"]
+    invalidation_rules: ["Handle depth exceeds half cup depth", "Break of cup's low"]
+    stages: [preceding_trend, left_rim, cup_decline, rounded_bottom, right_rim, handle, breakout]
+    confused_with: [rounded_bottom, double_bottom]
+    validator_params: {variant: cup_and_handle, inverse: false, rim_alignment_tol: 0.04, handle_depth_max: 0.35, roundness_fit_max_rmse: 0.03}
+
+  - id: inverse_cup_and_handle
+    name: Inverse Cup & Handle
+    category: classical
+    direction: bearish
+    min_bars: 40
+    max_bars: 250
+    geometry_validator: cup
+    description: "Inverted rounded dome followed by a shallow upward drift, then breakdown. Bearish mirror of the Cup & Handle."
+    confirmation_rules: ["Close below inverted rim"]
+    invalidation_rules: ["Rim reclaimed"]
+    stages: [preceding_trend, left_rim, cup_advance, rounded_top, right_rim, handle, breakdown]
+    confused_with: [rounded_top, double_top]
+    validator_params: {variant: cup_and_handle, inverse: true, rim_alignment_tol: 0.04, handle_depth_max: 0.35, roundness_fit_max_rmse: 0.03}
+
+  - id: rounded_bottom
+    name: Rounded Bottom
+    category: classical
+    direction: bullish
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: cup
+    description: "Saucer-shaped basin without the handle. Slow shift from supply to demand."
+    confirmation_rules: ["Close above left rim"]
+    invalidation_rules: ["New low under basin"]
+    stages: [preceding_trend, left_rim, decline, rounded_bottom, right_rim, breakout]
+    confused_with: [cup_and_handle, double_bottom]
+    validator_params: {variant: rounded, inverse: false, rim_alignment_tol: 0.05, roundness_fit_max_rmse: 0.035}
+
+  - id: rounded_top
+    name: Rounded Top
+    category: classical
+    direction: bearish
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: cup
+    description: "Dome-shaped top without a handle; gradual distribution."
+    confirmation_rules: ["Close below left rim"]
+    invalidation_rules: ["New high above dome"]
+    stages: [preceding_trend, left_rim, advance, rounded_top, right_rim, breakdown]
+    confused_with: [inverse_cup_and_handle, double_top]
+    validator_params: {variant: rounded, inverse: true, rim_alignment_tol: 0.05, roundness_fit_max_rmse: 0.035}
+
+  - id: ascending_triangle
+    name: Ascending Triangle
+    category: classical
+    direction: bullish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: trendline_pattern
+    description: "Flat resistance with rising support. Buyers gain control; typically resolves upward."
+    confirmation_rules: ["Close above flat resistance with volume"]
+    invalidation_rules: ["Support trendline broken downward"]
+    stages: [preceding_uptrend, flat_resistance_established, rising_lows, apex_approach, breakout]
+    confused_with: [symmetrical_triangle, rising_wedge]
+    validator_params: {upper: flat, lower: rising, convergence: true, slope_tol: 0.0015, touch_min: 2, flat_tol: 0.01}
+
+  - id: descending_triangle
+    name: Descending Triangle
+    category: classical
+    direction: bearish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: trendline_pattern
+    description: "Flat support with falling resistance. Sellers gain control; typically resolves downward."
+    confirmation_rules: ["Close below flat support"]
+    invalidation_rules: ["Resistance trendline broken upward"]
+    stages: [preceding_downtrend, flat_support_established, falling_highs, apex_approach, breakdown]
+    confused_with: [symmetrical_triangle, falling_wedge]
+    validator_params: {upper: falling, lower: flat, convergence: true, slope_tol: 0.0015, touch_min: 2, flat_tol: 0.01}
+
+  - id: symmetrical_triangle
+    name: Symmetrical Triangle
+    category: classical
+    direction: neutral
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: trendline_pattern
+    description: "Converging sloped support and resistance. Direction resolved on breakout; measured move equals widest part of triangle."
+    confirmation_rules: ["Close beyond either boundary"]
+    invalidation_rules: ["Extended drift into apex without breakout"]
+    stages: [preceding_trend, upper_boundary, lower_boundary, contraction, apex_approach, breakout]
+    confused_with: [ascending_triangle, descending_triangle, wedge]
+    validator_params: {upper: falling, lower: rising, convergence: true, slope_tol: 0.0015, touch_min: 2, flat_tol: 0.01}
+
+  - id: bull_flag
+    name: Bull Flag
+    category: classical
+    direction: bullish
+    min_bars: 15
+    max_bars: 120
+    geometry_validator: flag
+    description: "Sharp advance (pole) followed by a shallow downward-sloping consolidation (flag). Continuation pattern."
+    confirmation_rules: ["Close above flag's upper boundary"]
+    invalidation_rules: ["Flag retraces more than 50% of pole", "Pole origin broken"]
+    stages: [preceding_base, impulse_pole, consolidation_flag, breakout]
+    confused_with: [bull_pennant, descending_channel]
+    validator_params: {direction: bullish, pennant: false, pole_min_bars: 3, pole_min_slope: 0.03, retrace_max: 0.5, flag_slope_tol: 0.002}
+
+  - id: bear_flag
+    name: Bear Flag
+    category: classical
+    direction: bearish
+    min_bars: 15
+    max_bars: 120
+    geometry_validator: flag
+    description: "Sharp decline (pole) followed by a shallow upward-sloping consolidation. Bearish continuation."
+    confirmation_rules: ["Close below flag's lower boundary"]
+    invalidation_rules: ["Retrace more than 50% of pole"]
+    stages: [preceding_base, impulse_pole, consolidation_flag, breakdown]
+    confused_with: [bear_pennant, ascending_channel]
+    validator_params: {direction: bearish, pennant: false, pole_min_bars: 3, pole_min_slope: 0.03, retrace_max: 0.5, flag_slope_tol: 0.002}
+
+  - id: bull_pennant
+    name: Bull Pennant
+    category: classical
+    direction: bullish
+    min_bars: 15
+    max_bars: 120
+    geometry_validator: flag
+    description: "Steep pole followed by a small symmetrical consolidation that converges like a triangle. Continuation pattern."
+    confirmation_rules: ["Close above pennant's upper boundary"]
+    invalidation_rules: ["Deep retrace of pole"]
+    stages: [preceding_base, impulse_pole, converging_consolidation, breakout]
+    confused_with: [bull_flag, symmetrical_triangle]
+    validator_params: {direction: bullish, pennant: true, pole_min_bars: 3, pole_min_slope: 0.03, retrace_max: 0.5, flag_slope_tol: 0.002}
+
+  - id: bear_pennant
+    name: Bear Pennant
+    category: classical
+    direction: bearish
+    min_bars: 15
+    max_bars: 120
+    geometry_validator: flag
+    description: "Steep down-pole followed by a small converging consolidation. Bearish continuation."
+    confirmation_rules: ["Close below pennant's lower boundary"]
+    invalidation_rules: ["Recovery beyond pole origin"]
+    stages: [preceding_base, impulse_pole, converging_consolidation, breakdown]
+    confused_with: [bear_flag, symmetrical_triangle]
+    validator_params: {direction: bearish, pennant: true, pole_min_bars: 3, pole_min_slope: 0.03, retrace_max: 0.5, flag_slope_tol: 0.002}
+
+  - id: rising_wedge
+    name: Rising Wedge
+    category: classical
+    direction: bearish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: trendline_pattern
+    description: "Both boundaries rising but converging — momentum weakening into resistance. Usually resolves downward."
+    confirmation_rules: ["Close below lower rising boundary"]
+    invalidation_rules: ["Breakout above upper boundary with volume"]
+    stages: [preceding_uptrend, lower_boundary, upper_boundary, convergence, breakdown]
+    confused_with: [ascending_triangle, ascending_channel]
+    validator_params: {upper: rising, lower: rising, convergence: true, slope_tol: 0.0015, touch_min: 2, flat_tol: 0.01}
+
+  - id: falling_wedge
+    name: Falling Wedge
+    category: classical
+    direction: bullish
+    min_bars: 25
+    max_bars: 150
+    geometry_validator: trendline_pattern
+    description: "Both boundaries falling and converging — selling pressure fading. Usually resolves upward."
+    confirmation_rules: ["Close above upper falling boundary"]
+    invalidation_rules: ["Breakdown below lower boundary"]
+    stages: [preceding_downtrend, lower_boundary, upper_boundary, convergence, breakout]
+    confused_with: [descending_triangle, descending_channel]
+    validator_params: {upper: falling, lower: falling, convergence: true, slope_tol: 0.0015, touch_min: 2, flat_tol: 0.01}
+
+  - id: rectangle
+    name: Rectangle / Trading Range
+    category: classical
+    direction: neutral
+    min_bars: 20
+    max_bars: 200
+    geometry_validator: rectangle
+    description: "Price oscillates between parallel horizontal support and resistance while trend decides."
+    confirmation_rules: ["Close beyond either boundary"]
+    invalidation_rules: ["False break followed by opposite-side break"]
+    stages: [range_highs, range_lows, oscillation, breakout]
+    confused_with: [triple_top, triple_bottom]
+    validator_params: {flat_tol: 0.015, touch_min: 2, min_height_atr: 1.0}
+
+  - id: bullish_rectangle
+    name: Bullish Rectangle
+    category: classical
+    direction: bullish
+    min_bars: 20
+    max_bars: 200
+    geometry_validator: rectangle
+    description: "Rectangle occurring within an uptrend; bias resolves upward on resistance break."
+    confirmation_rules: ["Close above range high with volume"]
+    invalidation_rules: ["Range low broken"]
+    stages: [preceding_uptrend, range_highs, range_lows, oscillation, breakout]
+    confused_with: [ascending_triangle]
+    validator_params: {flat_tol: 0.015, touch_min: 2, min_height_atr: 1.0, bias: bullish}
+
+  - id: bearish_rectangle
+    name: Bearish Rectangle
+    category: classical
+    direction: bearish
+    min_bars: 20
+    max_bars: 200
+    geometry_validator: rectangle
+    description: "Rectangle occurring within a downtrend; bias resolves downward on support break."
+    confirmation_rules: ["Close below range low"]
+    invalidation_rules: ["Range high broken"]
+    stages: [preceding_downtrend, range_highs, range_lows, oscillation, breakdown]
+    confused_with: [descending_triangle]
+    validator_params: {flat_tol: 0.015, touch_min: 2, min_height_atr: 1.0, bias: bearish}
+
+  - id: broadening_formation
+    name: Broadening Formation
+    category: classical
+    direction: neutral
+    min_bars: 25
+    max_bars: 180
+    geometry_validator: broadening
+    description: "Diverging boundaries — higher highs and lower lows. Rising volatility; often resolves against the final swing."
+    confirmation_rules: ["Decisive close beyond either expanding boundary"]
+    invalidation_rules: ["Contraction back inside"]
+    stages: [expansion_highs, expansion_lows, divergence, breakout]
+    confused_with: [diamond_top, diamond_bottom]
+    validator_params: {divergence_min: 0.01, touch_min: 2}
+
+  - id: diamond_top
+    name: Diamond Top
+    category: classical
+    direction: bearish
+    min_bars: 35
+    max_bars: 200
+    geometry_validator: diamond
+    description: "Broadening then narrowing formation at a top, tracing a diamond. Rare but powerful reversal."
+    confirmation_rules: ["Close below lower-right boundary"]
+    invalidation_rules: ["New high above diamond apex"]
+    stages: [broadening_phase, narrowing_phase, breakdown]
+    confused_with: [broadening_formation, head_and_shoulders]
+    validator_params: {position: top}
+
+  - id: diamond_bottom
+    name: Diamond Bottom
+    category: classical
+    direction: bullish
+    min_bars: 35
+    max_bars: 200
+    geometry_validator: diamond
+    description: "Diamond-shaped complex bottom: expansion then contraction. Resolves upward."
+    confirmation_rules: ["Close above upper-right boundary"]
+    invalidation_rules: ["New low below diamond"]
+    stages: [broadening_phase, narrowing_phase, breakout]
+    confused_with: [broadening_formation, inverse_head_and_shoulders]
+    validator_params: {position: bottom}
+
+  - id: ascending_channel
+    name: Ascending Channel
+    category: classical
+    direction: bullish
+    min_bars: 30
+    max_bars: 250
+    geometry_validator: channel
+    description: "Price rising between two parallel upward-sloping lines. Continuation until lower rail breaks."
+    confirmation_rules: ["Hold above lower rail", "Higher highs/higher lows maintained"]
+    invalidation_rules: ["Close below lower rail"]
+    stages: [lower_rail, upper_rail, parallel_advance, continuation_or_break]
+    confused_with: [rising_wedge]
+    validator_params: {slope_sign: 1, parallel_tol: 0.15, touch_min: 2, slope_tol: 0.0012}
+
+  - id: descending_channel
+    name: Descending Channel
+    category: classical
+    direction: bearish
+    min_bars: 30
+    max_bars: 250
+    geometry_validator: channel
+    description: "Price falling between two parallel downward-sloping lines. Continuation until upper rail breaks."
+    confirmation_rules: ["Hold below upper rail"]
+    invalidation_rules: ["Close above upper rail"]
+    stages: [lower_rail, upper_rail, parallel_decline, continuation_or_break]
+    confused_with: [falling_wedge]
+    validator_params: {slope_sign: -1, parallel_tol: 0.15, touch_min: 2, slope_tol: 0.0012}
+
+  - id: horizontal_channel
+    name: Horizontal Channel
+    category: classical
+    direction: neutral
+    min_bars: 25
+    max_bars: 220
+    geometry_validator: rectangle
+    description: "Sidways price action bounded by parallel horizontal rails — a rectangle viewed as a channel."
+    confirmation_rules: ["Close beyond either rail"]
+    invalidation_rules: ["Repeated failed breakouts both sides"]
+    stages: [upper_rail, lower_rail, sideways_oscillation, breakout]
+    confused_with: [rectangle]
+    validator_params: {flat_tol: 0.015, touch_min: 2, min_height_atr: 0.8}

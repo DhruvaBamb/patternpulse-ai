@@ -1,0 +1,38 @@
+# YOLO detector training configuration.
+
+run_name: pattern_detector_v001
+model_arch: yolo11n                     # ultralytics arch used for fresh runs
+image_size: 640
+epochs: 120
+batch_size: 16
+device: auto                            # auto => mps > cuda > cpu on this machine
+workers: 4
+seed: 42
+
+optimizer:
+  name: auto
+  lr0: 0.01
+  lrf: 0.01
+
+dataset:
+  # Produced by: python -m ml.datasets.synthetic.generate --config configs/synthetic.yaml
+  version: null                         # null => read latest manifest under artifacts/datasets
+  registry_filter:
+    implemented_only: true
+  splits:
+    train_frac: 0.7
+    val_frac: 0.15
+    test_frac: 0.15
+    chronological: true                 # split synthetic series by underlying time
+
+checkpointing:
+  save_every_epochs: 1
+  keep_epoch_checkpoints: 5
+  save_best: true
+  emergency_on_signal: true             # SIGINT/SIGTERM => emergency.pt
+
+early_stopping:
+  enabled: true
+  patience: 25
+  metric: metrics/mAP50-95(B)
+  mode: max

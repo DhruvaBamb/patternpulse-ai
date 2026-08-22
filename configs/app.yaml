@@ -1,0 +1,73 @@
+# PatternPulse AI — application configuration
+# All tunables live here or in configs/*.yaml; no magic constants in code.
+
+app:
+  name: PatternPulse AI
+  env: development
+
+scanner:
+  # Universe of symbols scanned by the Pattern Radar (yfinance tickers).
+  universe:
+    - {symbol: RELIANCE.NS, name: Reliance Industries, market: NSE}
+    - {symbol: TCS.NS, name: Tata Consultancy Services, market: NSE}
+    - {symbol: INFY.NS, name: Infosys, market: NSE}
+    - {symbol: HDFCBANK.NS, name: HDFC Bank, market: NSE}
+    - {symbol: ICICIBANK.NS, name: ICICI Bank, market: NSE}
+    - {symbol: SBIN.NS, name: State Bank of India, market: NSE}
+    - {symbol: BHARTIARTL.NS, name: Bharti Airtel, market: NSE}
+    - {symbol: ITC.NS, name: ITC, market: NSE}
+    - {symbol: LT.NS, name: Larsen & Toubro, market: NSE}
+    - {symbol: KOTAKBANK.NS, name: Kotak Mahindra Bank, market: NSE}
+    - {symbol: AAPL, name: Apple Inc., market: NASDAQ}
+    - {symbol: MSFT, name: Microsoft, market: NASDAQ}
+    - {symbol: GOOGL, name: Alphabet, market: NASDAQ}
+    - {symbol: AMZN, name: Amazon, market: NASDAQ}
+    - {symbol: NVDA, name: NVIDIA, market: NASDAQ}
+    - {symbol: META, name: Meta Platforms, market: NASDAQ}
+    - {symbol: TSLA, name: Tesla, market: NASDAQ}
+  timeframes: ["15m", "1h", "1d"]      # intervals actively scanned
+  lookback_bars: 250                    # OHLC bars fetched per scan
+  minimum_confidence: 0.60              # fused confidence gate
+  minimum_completion: 0.30              # ignore ultra-early formations
+  scan_interval_seconds: 300            # scanner cadence
+  formation_expiry_hours: 48            # unseen formation => EXPIRED
+
+model:
+  detector: yolo11n                     # ultralytics model family
+  image_size: 640
+  weights: null                         # null => CV branch reports unavailable
+  confidence_threshold: 0.25
+  device: auto                          # auto | cpu | mps | cuda:0
+
+fusion:
+  # Configurable weights (validated against held-out data; see ml/evaluation)
+  weights:
+    visual: 0.45
+    geometry: 0.35
+    trend: 0.10
+    volume: 0.10
+  geometry_only_floor: 0.55             # geometry engine alone can publish a detection at/above this score
+  require_geometry_pass: false          # if true, geometry violations suppress CV detections
+
+signal:
+  atr_period: 14
+  atr_stop_multiplier: 1.5
+  breakout_volume_ratio: 1.2            # volume vs 20-bar mean required to confirm breakout
+  breakout_close_bars: 1                # closes beyond level needed
+
+training:
+  checkpoint_every_epochs: 1
+  keep_epoch_checkpoints: 5
+  auto_resume: true
+  emergency_checkpoint: true
+  early_stopping_patience: 25
+
+websocket:
+  heartbeat_seconds: 15
+
+api:
+  rate_limit_per_minute: 120
+
+chat:
+  max_history_messages: 20
+  max_tool_calls_per_turn: 6

@@ -1,0 +1,130 @@
+# Candlestick patterns (41). Single/multi-bar OHLCV rules implemented in
+# ml/geometry/candlestick/rules.py. `validator_params` are shape tolerances:
+#   body_ratio = body / range, upper/lower_shadow_ratio = shadow / range
+patterns:
+  - {id: doji, name: Doji, category: candlestick, direction: neutral,
+     description: "Open and close nearly equal — indecision between buyers and sellers.",     geometry_validator: doji, min_bars: 1, max_bars: 1,
+     confirmation_rules: ["Next bar closes in direction of resolution"],
+     invalidation_rules: ["Immediate reversal bar engulfs the doji"],
+     validator_params: {body_ratio_max: 0.05, variant: generic}}
+  - {id: long_legged_doji, name: Long-Legged Doji, category: candlestick, direction: neutral,
+     description: "Doji with long shadows both sides — wide fighting, no decision; volatility spike.",     geometry_validator: doji, min_bars: 1, max_bars: 1,
+     validator_params: {body_ratio_max: 0.05, variant: long_legged, min_range_atr: 0.8}}
+  - {id: dragonfly_doji, name: Dragonfly Doji, category: candlestick, direction: bullish,
+     description: "Open, high and close at the top with a long lower shadow — sellers rejected; bullish at support.",     geometry_validator: doji, min_bars: 1, max_bars: 1,
+     validator_params: {body_ratio_max: 0.06, variant: dragonfly, upper_shadow_ratio_max: 0.15}}
+  - {id: gravestone_doji, name: Gravestone Doji, category: candlestick, direction: bearish,
+     description: "Open, low and close at the bottom with a long upper shadow — buyers rejected; bearish at resistance.",     geometry_validator: doji, min_bars: 1, max_bars: 1,
+     validator_params: {body_ratio_max: 0.06, variant: gravestone, lower_shadow_ratio_max: 0.15}}
+  - {id: four_price_doji, name: Four-Price Doji, category: candlestick, direction: neutral,
+     description: "Open, high, low and close all (nearly) identical — extreme rarity, total stasis in illiquid bars.",     geometry_validator: doji, min_bars: 1, max_bars: 1,
+     validator_params: {body_ratio_max: 0.02, variant: four_price, range_atr_max: 0.05}}
+  - {id: hammer, name: Hammer, category: candlestick, direction: bullish,
+     description: "Small body at the top of the range with a lower shadow at least twice the body, after a decline — capitulation then rejection of lows.",     geometry_validator: hammer, min_bars: 1, max_bars: 2,
+     confirmation_rules: ["Appears after downtrend", "Next bar closes higher"],
+     validator_params: {lower_shadow_body_min: 2.0, upper_shadow_ratio_max: 0.25, body_ratio_max: 0.35, inverted: false, context: downtrend}}
+  - {id: inverted_hammer, name: Inverted Hammer, category: candlestick, direction: bullish,
+     description: "Small body at the bottom with a long upper shadow after a decline — early sign buyers are probing higher.",     geometry_validator: hammer, min_bars: 1, max_bars: 2,
+     validator_params: {upper_shadow_body_min: 2.0, lower_shadow_ratio_max: 0.25, body_ratio_max: 0.35, inverted: true, context: downtrend}}
+  - {id: hanging_man, name: Hanging Man, category: candlestick, direction: bearish,
+     description: "Hammer-shaped candle appearing after an advance — warning of distribution; needs bearish confirmation.",     geometry_validator: hammer, min_bars: 1, max_bars: 2,
+     validator_params: {lower_shadow_body_min: 2.0, upper_shadow_ratio_max: 0.25, body_ratio_max: 0.35, inverted: false, context: uptrend}}
+  - {id: shooting_star, name: Shooting Star, category: candlestick, direction: bearish,
+     description: "Small body at the bottom of the range with a long upper shadow after an advance — rally rejected at highs.",     geometry_validator: hammer, min_bars: 1, max_bars: 2,
+     validator_params: {upper_shadow_body_min: 2.0, lower_shadow_ratio_max: 0.25, body_ratio_max: 0.35, inverted: true, context: uptrend}}
+  - {id: bullish_engulfing, name: Bullish Engulfing, category: candlestick, direction: bullish,
+     description: "A bullish candle whose body fully engulfs the prior bearish body after a decline — demand overwhelms supply.",     geometry_validator: engulfing, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bullish, body_engulf_required: true}}
+  - {id: bearish_engulfing, name: Bearish Engulfing, category: candlestick, direction: bearish,
+     description: "A bearish candle whose body fully engulfs the prior bullish body after an advance — supply overwhelms demand.",     geometry_validator: engulfing, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bearish, body_engulf_required: true}}
+  - {id: bullish_harami, name: Bullish Harami, category: candlestick, direction: bullish,
+     description: "Small bullish body contained inside the prior large bearish body — selling pressure losing momentum.",     geometry_validator: harami, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bullish}}
+  - {id: bearish_harami, name: Bearish Harami, category: candlestick, direction: bearish,
+     description: "Small bearish body contained inside the prior large bullish body — buying pressure losing momentum.",     geometry_validator: harami, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bearish}}
+  - {id: harami_cross, name: Harami Cross, category: candlestick, direction: neutral,
+     description: "Doji contained within the prior long body — a stronger indecision signal than the standard harami.",     geometry_validator: harami, min_bars: 2, max_bars: 2,
+     validator_params: {direction: cross, second_body_ratio_max: 0.1}}
+  - {id: morning_star, name: Morning Star, category: candlestick, direction: bullish,
+     description: "Three-bar bottom: long bearish candle, small-bodied gap-down star, then bullish candle closing into the first body.",     geometry_validator: star, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish, third_close_into_body_min: 0.5}}
+  - {id: evening_star, name: Evening Star, category: candlestick, direction: bearish,
+     description: "Three-bar top: long bullish candle, small-bodied gap-up star, then bearish candle closing into the first body.",     geometry_validator: star, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish, third_close_into_body_min: 0.5}}
+  - {id: morning_doji_star, name: Morning Doji Star, category: candlestick, direction: bullish,
+     description: "Morning star whose middle candle is a doji — sharper indecision pivot at the low.",     geometry_validator: star, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish, middle_doji: true, third_close_into_body_min: 0.5}}
+  - {id: evening_doji_star, name: Evening Doji Star, category: candlestick, direction: bearish,
+     description: "Evening star whose middle candle is a doji — sharper indecision pivot at the high.",     geometry_validator: star, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish, middle_doji: true, third_close_into_body_min: 0.5}}
+  - {id: piercing_line, name: Piercing Line, category: candlestick, direction: bullish,
+     description: "After a decline, a bullish candle gaps down then closes above the midpoint of the prior bearish body (but below its open).",     geometry_validator: piercing, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bullish, min_penetration: 0.5, max_penetration: 1.0}}
+  - {id: dark_cloud_cover, name: Dark Cloud Cover, category: candlestick, direction: bearish,
+     description: "After an advance, a bearish candle gaps up then closes below the midpoint of the prior bullish body.",     geometry_validator: piercing, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bearish, min_penetration: 0.5, max_penetration: 1.0}}
+  - {id: three_white_soldiers, name: Three White Soldiers, category: candlestick, direction: bullish,
+     description: "Three consecutive strong bullish candles, each opening inside and closing above the prior body — sustained accumulation.",     geometry_validator: three_soldiers, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish}}
+  - {id: three_black_crows, name: Three Black Crows, category: candlestick, direction: bearish,
+     description: "Three consecutive strong bearish candles, each opening inside and closing below the prior body — sustained distribution.",     geometry_validator: three_soldiers, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish}}
+  - {id: tweezer_top, name: Tweezer Top, category: candlestick, direction: bearish,
+     description: "Two candles with matching highs at a top — first bullish, second bearish; double resistance test.",     geometry_validator: tweezers, min_bars: 2, max_bars: 2,
+     validator_params: {side: top, match_tol: 0.0015}}
+  - {id: tweezer_bottom, name: Tweezer Bottom, category: candlestick, direction: bullish,
+     description: "Two candles with matching lows at a bottom — first bearish, second bullish; double support test.",     geometry_validator: tweezers, min_bars: 2, max_bars: 2,
+     validator_params: {side: bottom, match_tol: 0.0015}}
+  - {id: marubozu_bullish, name: Marubozu Bullish, category: candlestick, direction: bullish,
+     description: "Full bullish body with negligible shadows — open at the low, close at the high; one-sided demand.",     geometry_validator: marubozu, min_bars: 1, max_bars: 1,
+     validator_params: {direction: bullish, shadow_ratio_max: 0.05, min_body_atr: 0.8}}
+  - {id: marubozu_bearish, name: Marubozu Bearish, category: candlestick, direction: bearish,
+     description: "Full bearish body with negligible shadows — open at the high, close at the low; one-sided supply.",     geometry_validator: marubozu, min_bars: 1, max_bars: 1,
+     validator_params: {direction: bearish, shadow_ratio_max: 0.05, min_body_atr: 0.8}}
+  - {id: spinning_top, name: Spinning Top, category: candlestick, direction: neutral,
+     description: "Small body centered between comparable upper and lower shadows — balance with slightly more range than a doji.",     geometry_validator: spinning_top, min_bars: 1, max_bars: 1,
+     validator_params: {body_ratio_max: 0.3, shadow_symmetry_tol: 0.5, body_ratio_min: 0.06}}
+  - {id: bullish_belt_hold, name: Bullish Belt Hold, category: candlestick, direction: bullish,
+     description: "Long bullish candle that opens at the bar's low (no lower shadow) after a decline and closes near the high.",     geometry_validator: belt_hold, min_bars: 1, max_bars: 2,
+     validator_params: {direction: bullish, context: downtrend}}
+  - {id: bearish_belt_hold, name: Bearish Belt Hold, category: candlestick, direction: bearish,
+     description: "Long bearish candle that opens at the bar's high (no upper shadow) after an advance and closes near the low.",     geometry_validator: belt_hold, min_bars: 1, max_bars: 2,
+     validator_params: {direction: bearish, context: uptrend}}
+  - {id: three_inside_up, name: Three Inside Up, category: candlestick, direction: bullish,
+     description: "Bullish harami confirmed by a third candle closing above the first candle's high.",     geometry_validator: three_inside, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish}}
+  - {id: three_inside_down, name: Three Inside Down, category: candlestick, direction: bearish,
+     description: "Bearish harami confirmed by a third candle closing below the first candle's low.",     geometry_validator: three_inside, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish}}
+  - {id: three_outside_up, name: Three Outside Up, category: candlestick, direction: bullish,
+     description: "Bullish engulfing confirmed by a further close above both bodies.",     geometry_validator: three_outside, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish}}
+  - {id: three_outside_down, name: Three Outside Down, category: candlestick, direction: bearish,
+     description: "Bearish engulfing confirmed by a further close below both bodies.",     geometry_validator: three_outside, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish}}
+  - {id: rising_three_methods, name: Rising Three Methods, category: candlestick, direction: bullish,
+     description: "Long bullish candle, three small contained bearish candles drifting down, then another strong bullish close above the first body — continuation.",     geometry_validator: three_methods, min_bars: 5, max_bars: 5,
+     validator_params: {direction: bullish}}
+  - {id: falling_three_methods, name: Falling Three Methods, category: candlestick, direction: bearish,
+     description: "Long bearish candle, three small contained bullish candles, then a strong bearish close below the first body — continuation.",     geometry_validator: three_methods, min_bars: 5, max_bars: 5,
+     validator_params: {direction: bearish}}
+  - {id: upside_tasuki_gap, name: Upside Tasuki Gap, category: candlestick, direction: bullish,
+     description: "Bullish candle, gap-up bullish candle, then a bearish candle opening inside the prior body and closing (partially) into the gap without filling it — continuation.",     geometry_validator: tasuki_gap, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish}}
+  - {id: downside_tasuki_gap, name: Downside Tasuki Gap, category: candlestick, direction: bearish,
+     description: "Bearish candle, gap-down bearish candle, then a bullish candle opening inside the prior body and closing into the gap without filling it — continuation.",     geometry_validator: tasuki_gap, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish}}
+  - {id: abandoned_baby_bullish, name: Abandoned Baby Bullish, category: candlestick, direction: bullish,
+     description: "Rare three-bar reversal: bearish candle, gap-down doji whose shadows gap on both sides, then a gap-up bullish candle — an isolated low.",     geometry_validator: abandoned_baby, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bullish}}
+  - {id: abandoned_baby_bearish, name: Abandoned Baby Bearish, category: candlestick, direction: bearish,
+     description: "Rare three-bar reversal: bullish candle, gap-up doji isolated by gaps, then a gap-down bearish candle — an isolated high.",     geometry_validator: abandoned_baby, min_bars: 3, max_bars: 3,
+     validator_params: {direction: bearish}}
+  - {id: kicking_bullish, name: Kicking Bullish, category: candlestick, direction: bullish,
+     description: "A bearish marubozu immediately followed by a gap-up bullish marubozu — violent sentiment reversal.",     geometry_validator: kicking, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bullish}}
+  - {id: kicking_bearish, name: Kicking Bearish, category: candlestick, direction: bearish,
+     description: "A bullish marubozu immediately followed by a gap-down bearish marubozu — violent sentiment reversal down.",     geometry_validator: kicking, min_bars: 2, max_bars: 2,
+     validator_params: {direction: bearish}}

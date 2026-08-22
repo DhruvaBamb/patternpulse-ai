@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Databases / data
+data/**/*.db
+data/**/*.sqlite*
+data/downloads/
+data/datasets/
+*.sqlite3
+
+# ML artifacts (large binaries)
+artifacts/run/
+artifacts/models/*.pt
+artifacts/models/*.onnx
+artifacts/datasets/
+*.pt
+*.onnx
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+frontend/.next/
+frontend/node_modules/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs
+logs/
+*.log
+
+# Notebooks
+.ipynb_checkpoints/

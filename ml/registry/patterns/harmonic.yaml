@@ -1,0 +1,108 @@
+# Harmonic patterns (8 definitions; bullish/bearish variants are a direction
+# attribute resolved from the XABCD structure rather than duplicate classes).
+# validator_params ratio windows are tolerances around classic Fibonacci levels.
+patterns:
+  - id: gartley
+    name: Gartley
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "XABCD structure where B retraces 0.618 of XA and D completes at 0.786 of XA. Direction (bullish/bearish) depends on orientation; reversal expected at D."
+    confirmation_rules: ["D completes inside PRZ", "Reversal candle at D"]
+    invalidation_rules: ["D exceeds X (invalidates structure)"]
+    stages: [xa_leg, b_retracement, bc_projection, d_completion_prz, reversal]
+    confused_with: [bat, butterfly]
+    validator_params: {xab_min: 0.618, xab_max: 0.65, ad_min: 0.786, ad_max: 0.82, bc_projection: [1.13, 1.618], xd_max: 1.0}
+  - id: bat
+    name: Bat
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "XABCD where B retraces less than 0.618 of XA (0.382–0.50) and D completes at 0.886 of XA with an extended BC projection (1.618–2.618)."
+    confirmation_rules: ["D at 0.886 XA within PRZ"]
+    invalidation_rules: ["D beyond X"]
+    stages: [xa_leg, b_retracement, bc_projection, d_completion_prz, reversal]
+    confused_with: [gartley, deep_crab]
+    validator_params: {xab_min: 0.382, xab_max: 0.50, ad_min: 0.886, ad_max: 0.90, bc_projection: [1.618, 2.618], xd_max: 1.0}
+  - id: butterfly
+    name: Butterfly
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "Extension pattern: B retraces 0.786 of XA and D extends beyond X, completing at 1.27–1.618 of XA."
+    confirmation_rules: ["D in 1.27–1.618 XA extension zone"]
+    invalidation_rules: ["D beyond 1.618 XA"]
+    stages: [xa_leg, b_retracement, bc_projection, d_extension_prz, reversal]
+    confused_with: [crab, gartley]
+    validator_params: {xab_min: 0.786, xab_max: 0.82, ad_min: 1.27, ad_max: 1.618, bc_projection: [1.618, 2.24], xd_max: 1.618}
+  - id: crab
+    name: Crab
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "Sharp pattern with B at 0.382–0.618 of XA and D at an extreme 1.618 XA extension — deep PRZ entry."
+    confirmation_rules: ["D near 1.618 XA"]
+    invalidation_rules: ["D beyond 1.68 XA"]
+    stages: [xa_leg, b_retracement, bc_projection, d_extension_prz, reversal]
+    confused_with: [deep_crab, butterfly]
+    validator_params: {xab_min: 0.382, xab_max: 0.618, ad_min: 1.55, ad_max: 1.65, bc_projection: [2.4, 3.618], xd_max: 1.68}
+  - id: deep_crab
+    name: Deep Crab
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "Crab variant with B exactly at 0.886 of XA and D pinned at 1.618 XA."
+    confirmation_rules: ["B near 0.886 XA", "D near 1.618 XA"]
+    invalidation_rules: ["D beyond 1.68 XA"]
+    stages: [xa_leg, b_retracement, bc_projection, d_extension_prz, reversal]
+    confused_with: [crab, butterfly]
+    validator_params: {xab_min: 0.86, xab_max: 0.90, ad_min: 1.58, ad_max: 1.63, bc_projection: [2.0, 3.618], xd_max: 1.68}
+  - id: shark
+    name: Shark
+    category: harmonic
+    direction: neutral
+    min_bars: 25
+    max_bars: 180
+    geometry_validator: harmonic
+    description: "ABCD-style structure anchored at O: B extends 1.13–1.618 beyond X, C completes at 0.886–1.13 of OX. Reversal at C toward 0.5–0.618."
+    confirmation_rules: ["C in 0.886–1.13 OX zone"]
+    invalidation_rules: ["C beyond 1.13 OX"]
+    stages: [ox_leg, b_extension, c_completion_prz, reversal]
+    confused_with: [cypher, crab]
+    validator_params: {variant: shark, xb_min: 1.13, xb_max: 1.618, xc_min: 0.886, xc_max: 1.13}
+  - id: cypher
+    name: Cypher
+    category: harmonic
+    direction: neutral
+    min_bars: 30
+    max_bars: 200
+    geometry_validator: harmonic
+    description: "XABCD where C extends beyond A to 1.272–1.414 of XA, and D retraces 0.786 of XC."
+    confirmation_rules: ["C beyond A at 1.272–1.414 XA", "D at 0.786 XC"]
+    invalidation_rules: ["C beyond 1.414 XA"]
+    stages: [xa_leg, b_retracement, c_extension, d_completion_prz, reversal]
+    confused_with: [shark, butterfly]
+    validator_params: {variant: cypher, xab_min: 0.382, xab_max: 0.618, xc_xa_min: 1.272, xc_xa_max: 1.414, d_of_xc: 0.786}
+  - id: ab_cd
+    name: AB=CD
+    category: harmonic
+    direction: neutral
+    min_bars: 20
+    max_bars: 150
+    geometry_validator: harmonic
+    description: "Simplest harmonic: CD leg approximately equals AB in price length (and ideally time), signalling reversal at D."
+    confirmation_rules: ["CD length within 5–10% of AB", "Reversal at D"]
+    invalidation_rules: ["CD extends far beyond 1.27 AB"]
+    stages: [ab_leg, bc_retracement, cd_leg_completion, reversal]
+    confused_with: [gartley]
+    validator_params: {variant: abcd, bc_min: 0.618, bc_max: 0.786, cd_tolerance: 0.10}

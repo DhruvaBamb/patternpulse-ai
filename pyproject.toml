@@ -1,0 +1,71 @@
+[project]
+name = "patternpulse-ai"
+version = "0.1.0"
+description = "Real-Time Chart & Candlestick Pattern Detection, Formation Tracking, AI Market Intelligence & Explainable Signal Platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Backend
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "sqlalchemy>=2.0",
+    "python-dotenv>=1.0",
+    "sse-starlette>=2.1",
+    # Market data
+    "yfinance>=0.2.40",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    # ML / CV
+    "ultralytics>=8.3.40",
+    "torch>=2.5",
+    "torchvision>=0.20",
+    "opencv-python-headless>=4.10",
+    "pillow>=10.4",
+    "matplotlib>=3.9",
+    "scikit-learn>=1.5",
+    "scipy>=1.14",
+    # Config / tooling
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    "groq>=0.13",
+    "apscheduler>=3.10",
+    "structlog>=24.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend", "ml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests that are slow (full training loops)",
+    "network: requires internet access",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = false

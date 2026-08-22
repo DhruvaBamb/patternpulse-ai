@@ -1,0 +1,24 @@
+# Candlestick chart rendering configuration.
+# The SAME config is used for training, validation, testing and live inference
+# so the CV model always sees identically-styled images.
+
+rendering:
+  image_width: 640
+  image_height: 640
+  window_bars: 96                       # candles per image
+  background: "#14161f"                 # dark neutral (dark-mode default)
+  background_light: "#ffffff"
+  bull_body: "#26a69a"
+  bull_wick: "#26a69a"
+  bear_body: "#ef5350"
+  bear_wick: "#ef5350"
+  doji_body_px: 1
+  chart_padding_x: 8
+  chart_padding_y: 14
+  candle_gap_ratio: 0.35               # gap between candles relative to body width
+  wick_width_px: 1
+  show_volume: false                    # volume sub-panel off for detector v1
+  volume_height_ratio: 0.18
+  axis_margin_px: 0
+  y_range_padding_ratio: 0.02          # vertical padding above/below hi-lo range
+  antialiased_wicks: true
