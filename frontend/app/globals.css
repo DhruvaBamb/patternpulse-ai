@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --border: #e3e6ec;
+  --text: #1c202b;
+  --muted: #667085;
+}
+
+.dark {
+  --bg: #101219;
+  --panel: #171a24;
+  --border: #262b3a;
+  --text: #e8eaf0;
+  --muted: #8b93a7;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "tnum" 1, "cv05" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  border-color: var(--border);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* thin scrollbars for dense tables */
+.dense-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.dense-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}

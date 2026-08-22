@@ -63,14 +63,17 @@ class YFinanceProvider(MarketDataProvider):
 
         try:
             ticker = yf.Ticker(symbol)
-            df = ticker.history(
-                period="max" if limit is not None and interval in ("1m",) else "auto",
-                interval=yf_interval,
-                start=start,
-                end=end,
-                auto_adjust=False,
-                actions=False,
-            )
+            if limit is not None and interval in ("1m",):
+                # intraday minute data: yfinance caps history, use period only
+                df = ticker.history(period="7d", interval=yf_interval, auto_adjust=False, actions=False)
+            else:
+                df = ticker.history(
+                    interval=yf_interval,
+                    start=start,
+                    end=end,
+                    auto_adjust=False,
+                    actions=False,
+                )
             if df is None or (hasattr(df, "empty") and df.empty):
                 # fall back to period-based fetch for daily/weekly
                 df = ticker.history(

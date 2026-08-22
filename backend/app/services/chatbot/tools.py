@@ -37,7 +37,7 @@ TOOL_SCHEMAS: list[dict] = [
                 "type": "object",
                 "properties": {
                     "symbol": {"type": "string"},
-                    "interval": {"type": "string", "description": "Optional timeframe: 15m, 1h, 1d ..."},
+                    "interval": {"type": ["string", "null"], "description": "Optional timeframe: 15m, 1h, 1d ..."},
                 },
                 "required": ["symbol"],
             },
@@ -51,11 +51,11 @@ TOOL_SCHEMAS: list[dict] = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "min_confidence": {"type": "number", "description": "0-1"},
-                    "min_completion": {"type": "number", "description": "0-100"},
-                    "pattern": {"type": "string", "description": "pattern id like cup_and_handle"},
-                    "direction": {"type": "string", "enum": ["bullish", "bearish", "neutral"]},
-                    "timeframe": {"type": "string"},
+                    "min_confidence": {"type": ["number", "null"], "description": "0-1"},
+                    "min_completion": {"type": ["number", "null"], "description": "0-100"},
+                    "pattern": {"type": ["string", "null"], "description": "pattern id like cup_and_handle"},
+                    "direction": {"type": ["string", "null"], "enum": ["bullish", "bearish", "neutral", None]},
+                    "timeframe": {"type": ["string", "null"]},
                     "limit": {"type": "integer"},
                 },
             },
@@ -76,7 +76,7 @@ TOOL_SCHEMAS: list[dict] = [
             "description": "The most recent BUY/SELL/HOLD/WATCH signal and its reasoning for a symbol.",
             "parameters": {
                 "type": "object",
-                "properties": {"symbol": {"type": "string"}, "interval": {"type": "string"}},
+                "properties": {"symbol": {"type": "string"}, "interval": {"type": ["string", "null"]}},
                 "required": ["symbol"],
             },
         },
@@ -100,7 +100,7 @@ TOOL_SCHEMAS: list[dict] = [
             "description": "List patterns the platform knows, with category/direction and implementation status.",
             "parameters": {
                 "type": "object",
-                "properties": {"category": {"type": "string", "enum": ["classical", "candlestick", "harmonic"]}},
+                "properties": {"category": {"type": ["string", "null"], "enum": ["classical", "candlestick", "harmonic", None]}},
             },
         },
     },
@@ -119,7 +119,7 @@ TOOL_SCHEMAS: list[dict] = [
             "description": "Historical performance statistics produced by the backtesting engine (only if a backtest has run).",
             "parameters": {
                 "type": "object",
-                "properties": {"pattern": {"type": "string", "description": "optional pattern filter"}},
+                "properties": {"pattern": {"type": ["string", "null"], "description": "optional pattern filter"}},
             },
         },
     },

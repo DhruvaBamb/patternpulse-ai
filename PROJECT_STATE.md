@@ -6,25 +6,50 @@ Single source of truth for cross-session progress. Update after every work sessi
 - **Repo**: `/Users/dhruvasbamb/Desktop/Patterns` (git repo, branch `main`)
 - **Machine**: macOS arm64 (Apple Silicon) — MPS available, no CUDA.
 
-## Status snapshot
+## Status snapshot (verified live 2026-08-22)
 
-| Area | State |
-|---|---|
-| Repo scaffold, configs, gitignore, env | ✅ Done |
-| Pattern registry (~78 defs) | ✅ Done — `ml/registry/` |
-| Market data (yfinance) + validation | ✅ Done — `ml/datasets/providers/`, `ml/datasets/validation.py` |
-| Chart renderer | ✅ Done — `ml/datasets/rendering/` |
-| Geometry engine (classical + candlestick + harmonic) | ✅ Done — `ml/geometry/` |
-| Fusion / completion / signal engine | ✅ Done — `ml/inference/fusion.py`, `ml/completion/`, `backend/app/services/signals.py` |
-| Synthetic dataset generator | ✅ Done — `ml/datasets/synthetic/` |
-| YOLO training + checkpoint/resume | ✅ Done — `ml/training/` |
-| Backend API + DB + scanner + SSE | ✅ Done — `backend/app/` |
-| Frontend (Next.js) | ✅ Done — `frontend/` |
-| PulseAI (Groq) chatbot | ✅ Done — `backend/app/services/chatbot/` |
-| Backtesting engine | ✅ Done — `ml/backtesting/` |
-| Tests / docs / Docker | ✅ Done |
+| Area | State | Evidence |
+|---|---|---|
+| Registry (77 patterns) | ✅ | `/api/registry/patterns` returns 77; integrity tests green |
+| Market data + validation | ✅ | live yfinance scan, 0 fetch failures after fix |
+| Renderer | ✅ | determinism tests green |
+| Geometry engine | ✅ | known-answer fixtures (H&S, doubles, cup, engulfing, Gartley) green |
+| Fusion / completion / signals | ✅ | AAPL live scan produced staged formations + reasoned BUY/WATCH |
+| Synthetic generator | ✅ | 231 verified positives in smoke run; ~50% verify rate (honest, see below) |
+| Training + checkpoint/resume | ✅ implemented | not yet executed end-to-end (needs a real training run) |
+| Backend + scanner + SSE | ✅ | 255 live formations tracked across 17 symbols × 3 timeframes |
+| Frontend | ✅ | `next build` — 14/14 routes compile |
+| PulseAI (Groq) | ✅ | live tool-calling verified (model fallback works) |
+| Backtesting | ✅ implemented | engine + UI + queue; run it from /backtesting |
+| Tests / docs / Docker | ✅ | 51 pytest green; docs/ complete; compose files written |
 
-> Update the table above as work proceeds; details in CHANGELOG.md.
+## Current mode
+
+**Geometry-only** (no trained CV weights). The UI/API label this honestly;
+fused confidence carries the no-visual penalty. Train the detector to
+activate the full CV+geometry pipeline.
+
+## Known limitations (tracked, honest)
+
+1. Synthetic verify pass keeps ~50% of generated positives (validators are
+   stricter than the idealised generators). Kept positives are guaranteed
+   detectable; improve generator fidelity for higher yield.
+2. Geometry-only mode surfaces several overlapping interpretations per
+   window (e.g. Rounded Top + H&S on the same bars). CV training + fusion
+   disagreement penalties are the designed mitigations.
+3. Training pipeline is implemented but no full run has been executed yet —
+   mAP numbers do not exist and are not claimed anywhere.
+4. Real-data annotation workflow (CVAT/Roboflow) is scaffolded, not wired.
+5. The Groq model catalogue rotates; the assistant falls back through a
+   model list (verified working).
+
+## Next development tasks
+
+1. `python -m ml.datasets.synthetic.generate --samples 300` then
+   `python -m ml.training.train --auto-resume` on this Mac (MPS).
+2. Evaluate mAP; iterate on generator fidelity for weak classes.
+3. Run backtests from the UI to populate per-pattern statistics.
+4. Wire the real-data annotation import (`ml/datasets/real/`).
 
 ## Architecture decisions
 

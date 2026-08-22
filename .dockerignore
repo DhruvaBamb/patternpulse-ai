@@ -1,0 +1,14 @@
+.venv
+node_modules
+frontend/node_modules
+frontend/.next
+artifacts
+data
+__pycache__
+*.pyc
+.git
+.env
+tests
+notebooks
+docs
+*.db

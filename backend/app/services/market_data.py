@@ -70,9 +70,20 @@ class MarketDataService:
                 for ts, r in df.iterrows()
                 if ts not in existing
             ]
-            if rows:
+            if not rows:
+                return
+            try:
                 db.add_all(rows)
                 db.commit()
+            except Exception:
+                # concurrent writer inserted first — fall back to per-row best effort
+                db.rollback()
+                for row in rows:
+                    try:
+                        db.add(row)
+                        db.commit()
+                    except Exception:
+                        db.rollback()
         except Exception as exc:
             db.rollback()
             logger.warning("candle_persist_failed", symbol=ticker, error=str(exc))

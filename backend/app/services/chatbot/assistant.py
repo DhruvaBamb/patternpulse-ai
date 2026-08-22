@@ -40,9 +40,18 @@ class ChatbotUnavailable(RuntimeError):
 
 
 class PulseAssistant:
+    # tried in order when the configured model 404s (Groq rotates its catalogue)
+    MODEL_FALLBACKS = [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "openai/gpt-oss-120b",
+        "openai/gpt-oss-20b",
+    ]
+
     def __init__(self) -> None:
         self.settings = get_settings()
         self._client = None
+        self._resolved_model: str | None = None
         if self.settings.groq_api_key:
             try:
                 from groq import AsyncGroq
@@ -50,6 +59,26 @@ class PulseAssistant:
                 self._client = AsyncGroq(api_key=self.settings.groq_api_key)
             except Exception as exc:
                 logger.error("groq_init_failed", error=str(exc))
+
+    async def _create(self, **kwargs):
+        """chat.completions.create with model fallback on model_not_found."""
+        candidates = [self.settings.groq_model] + [
+            m for m in self.MODEL_FALLBACKS if m != self.settings.groq_model
+        ]
+        if self._resolved_model:
+            candidates = [self._resolved_model] + [m for m in candidates if m != self._resolved_model]
+        last_exc: Exception | None = None
+        for model in candidates:
+            try:
+                resp = await self._client.chat.completions.create(model=model, **kwargs)
+                self._resolved_model = model
+                return resp
+            except Exception as exc:
+                if "does not exist" in str(exc) or "model_not_found" in str(exc):
+                    last_exc = exc
+                    continue
+                raise
+        raise last_exc or RuntimeError("no Groq model available")
 
     @property
     def available(self) -> bool:
@@ -88,8 +117,7 @@ class PulseAssistant:
         tool_calls_used: list[dict] = []
 
         for _turn in range(4):  # bounded tool loop
-            resp = await self._client.chat.completions.create(
-                model=self.settings.groq_model,
+            resp = await self._create(
                 messages=messages,
                 tools=TOOL_SCHEMAS,
                 stream=True,
@@ -137,6 +165,7 @@ class PulseAssistant:
                     args = json.loads(tc["arguments"] or "{}")
                 except json.JSONDecodeError:
                     args = {}
+                args = {k: v for k, v in args.items() if v is not None}
                 fn = tools.get(tc["name"])
                 result = fn(args) if fn else json.dumps({"error": f"unknown tool {tc['name']}"})
                 tool_calls_used.append({"tool": tc["name"], "args": args})
